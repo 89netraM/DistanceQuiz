@@ -4,6 +4,10 @@
 	import { Map, LatLngBounds, LatLng, TileLayer, Tooltip, Point } from "leaflet";
 	import { GeodesicLine } from "leaflet.geodesic";
 
+	const lineZIndex = 10;
+	const iconZIndex = 20;
+	const labelZIndex = 30;
+
 	export let from: LatLng;
 	export let targets: ReadonlyArray<LatLng>;
 	export let mapLayer: TileLayer;
@@ -22,12 +26,12 @@
 		const bound = new LatLngBounds([from, ...targets]);
 		map.fitBounds(bound);
 
+		addPoint(map, from, fromIcon);
+
 		const farthest = targets.reduce((a, t) => Math.max(a, map.distance(from, t)), 0);
 		for (const target of targets) {
 			addTarget(map, from, target, farthest);
 		}
-
-		addPoint(map, from, fromIcon);
 	}
 
 	function addTarget(map: Map, from: LatLng, target: LatLng, farthest: number): void {
@@ -45,6 +49,7 @@
 				direction: "center",
 				opacity: 1,
 				className: "target-icon",
+				zIndexOffset: iconZIndex,
 			}),
 		);
 	}
@@ -55,6 +60,7 @@
 				weight: 2,
 				steps: 8,
 				wrap: true,
+				zIndexOffset: lineZIndex,
 			}),
 		);
 	}
@@ -68,6 +74,7 @@
 				opacity: 1,
 				className: "distance-label",
 				offset: new Point(0, 30),
+				zIndexOffset: labelZIndex,
 			}),
 		);
 	}
