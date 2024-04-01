@@ -19,17 +19,19 @@
 		const bound = new LatLngBounds([from, ...targets]);
 		map.fitBounds(bound);
 
+		const farthest = targets.reduce((a, t) => Math.max(a, map.distance(from, t)), 0);
 		for (const target of targets) {
-			addTarget(map, from, target);
+			addTarget(map, from, target, farthest);
 		}
 
 		addPoint(map, from, fromIcon);
 	}
 
-	function addTarget(map: Map, from: LatLng, target: LatLng): void {
+	function addTarget(map: Map, from: LatLng, target: LatLng, farthest: number): void {
+		const distance = map.distance(from, target);
 		addLine(map, from, target);
-		addPoint(map, target, targetIcon);
-		addDistance(map, from, target);
+		addPoint(map, target, distance === farthest ? goalIcon : targetIcon);
+		addDistance(map, target, distance);
 	}
 
 	function addPoint(map: Map, point: LatLng, icon: string): void {
@@ -54,8 +56,7 @@
 		);
 	}
 
-	function addDistance(map: Map, from: LatLng, target: LatLng): void {
-		const distance = map.distance(from, target);
+	function addDistance(map: Map, target: LatLng, distance: number): void {
 		map.addLayer(
 			new Tooltip(target, {
 				content: humanize(distance),
