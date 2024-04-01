@@ -1,5 +1,6 @@
 <script lang="ts">
 	import "leaflet/dist/leaflet.css";
+	import { onDestroy } from "svelte";
 	import { Map, LatLngBounds, LatLng, TileLayer, Tooltip, Point } from "leaflet";
 	import { GeodesicLine } from "leaflet.geodesic";
 
@@ -10,8 +11,10 @@
 	export let targetIcon: string = "🔶";
 	export let goalIcon: string = "⭐";
 
+	let map: Map;
+
 	function LoadMap(node: HTMLElement): void {
-		const map = new Map(node, {
+		map = new Map(node, {
 			zoomControl: false,
 		});
 		map.addLayer(mapLayer);
@@ -75,6 +78,10 @@
 		}
 		return `${Math.round(length)} m`;
 	}
+
+	onDestroy(() => {
+		map.remove();
+	});
 </script>
 
 <div use:LoadMap />
