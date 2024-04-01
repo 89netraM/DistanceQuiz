@@ -11,7 +11,9 @@
 	export let goalIcon: string = "⭐";
 
 	function LoadMap(node: HTMLElement): void {
-		const map = new Map(node);
+		const map = new Map(node, {
+			zoomControl: false,
+		});
 		map.addLayer(mapLayer);
 
 		const bound = new LatLngBounds([from, ...targets]);
